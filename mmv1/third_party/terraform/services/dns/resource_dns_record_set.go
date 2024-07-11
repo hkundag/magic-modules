@@ -199,6 +199,11 @@ func ResourceDnsRecordSet() *schema.Resource {
 							ExactlyOneOf:  []string{"routing_policy.0.wrr", "routing_policy.0.geo", "routing_policy.0.primary_backup"},
 							ConflictsWith: []string{"routing_policy.0.enable_geo_fencing"},
 						},
+						"health_check": {
+							Type:        schema.TypeString,
+							Optional:    true,
+							Description: "The configuration used to health check public IP addresses in this routing policy.",
+						},
 					},
 				},
 				ExactlyOneOf: []string{"rrdatas", "routing_policy"},
@@ -256,7 +261,7 @@ var healthCheckedTargetSchema *schema.Resource = &schema.Resource{
 	Schema: map[string]*schema.Schema{
 		"internal_load_balancers": {
 			Type:        schema.TypeList,
-			Required:    true,
+			Optional:    true,
 			Description: "The list of internal load balancers to health check.",
 			Elem: &schema.Resource{
 				Schema: map[string]*schema.Schema{
@@ -299,6 +304,14 @@ var healthCheckedTargetSchema *schema.Resource = &schema.Resource{
 						Description: "The region of the load balancer. Only needed for regional load balancers.",
 					},
 				},
+			},
+		},
+		"external_endpoints": {
+			Type:        schema.TypeList,
+			Optional:    true,
+			Description: "The list of public IP addresses to health check.",
+			Elem: &schema.Schema{
+				Type: schema.TypeString,
 			},
 		},
 	},
